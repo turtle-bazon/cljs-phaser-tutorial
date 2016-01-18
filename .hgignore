@@ -1,2 +1,3 @@
 glob:
+resources/public/js/main.js
 target/*
