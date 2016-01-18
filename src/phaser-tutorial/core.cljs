@@ -30,7 +30,7 @@
     (pgof/sprite pgof 0 0 "sky")
     (reset! *platforms* (-> game :add (pgof/group "platforms" false true)))
     (pset! @*platforms* :enable-body true)
-    (reset! *player* (pgof/sprite pgof 32 (- game-world-h 150) "dude"))
+    (reset! *player* (pgof/sprite pgof 32 (- game-world-h 12j0) "dude"))
     (let [ground (pgr/create @*platforms* 0 (- game-world-h 64) "ground")
           ledge1 (pgr/create @*platforms* 400 400 "ground")
           ledge2 (pgr/create @*platforms* -150 250 "ground")
