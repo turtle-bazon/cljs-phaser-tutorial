@@ -6,17 +6,18 @@
                  [org.clojure/clojurescript "1.7.170"]
                  [phzr "0.1.0-SNAPSHOT"]]
   :plugins [[lein-cljsbuild "1.1.2"]
-            [lein-figwheel "0.5.0-1"]
+            [lein-figwheel "0.5.0-3"]
             [cider/cider-nrepl "0.10.0"]
             [refactor-nrepl "1.2.0"]]
   :source-paths ["src"]
   :profiles {:dev {:dependencies [[org.clojure/tools.nrepl "0.2.12"]
                                   [org.clojure/tools.reader "0.10.0"]
                                   [com.cemerick/piggieback "0.2.1"]
-                                  [figwheel-sidecar "0.5.0-1"]]}}
+                                  [figwheel-sidecar "0.5.0-3"]]}}
   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
   :cljsbuild {:builds
               [{:id "dev"
+		:figwheel true
                 :source-paths ["src"]
                 :compiler {:main phaser-tutorial.core
                            :asset-path "js/out"
