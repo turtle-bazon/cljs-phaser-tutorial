@@ -17,7 +17,7 @@
   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
   :cljsbuild {:builds
               [{:id "dev"
-		:figwheel true
+		:figwheel {:websocket-host :js-client-host}
                 :source-paths ["src"]
                 :compiler {:main phaser-tutorial.core
                            :asset-path "js/out"

@@ -1,5 +1,6 @@
 glob:
 .lein-repl-history
+.nrepl-port
 figwheel_server.log
 resources/public/js/main.js
 resources/public/js/out/*
