@@ -5,16 +5,21 @@
    [phzr.game :as pg]
    [phzr.game-object-factory :as pgof]
    [phzr.group :as pgr]
+   [phzr.keyboard :as pk]
    [phzr.loader :as pl]
    [phzr.physics :as pp]
    [phzr.physics.arcade :as ppa]
    [phzr.point :as ppnt]))
 
-(def *platforms* (atom nil))
+(defonce *game* (atom nil))
 
-(def *player* (atom nil))
+(defonce *platforms* (atom nil))
 
-(defn p-preload [game]
+(defonce *player* (atom nil))
+
+(defonce *cursors* (atom nil))
+
+(defn preload-game [game]
   (let [loader (:load game)]
     (doto loader
       (pl/image "sky" "assets/sky.png")
@@ -22,7 +27,7 @@
       (pl/image "star" "assets/star.png")
       (pl/spritesheet "dude" "assets/dude.png" 32 48))))
 
-(defn p-create [game]
+(defn create-game [game]
   (let [pgof (:add game)
         physics (:physics game)
         game-world-h (-> game :world :height)]
@@ -45,16 +50,28 @@
       (pset! (-> player :body) :collide-world-bounds true)
       (-> player :animations (pam/add "left" [0 1 2 3] 10 true))
       (-> player :animations (pam/add "right" [5 6 7 8] 10 true))
-      )))
+      )
+    (reset! *cursors* (pk/create-cursor-keys (-> game :input :keyboard)))))
 
-(defn p-update [game]
-  (-> game :physics :arcade (ppa/collide @*player* @*platforms*)))
+(defn update-game [game]
+  (-> game :physics :arcade (ppa/collide @*player* @*platforms*))
+  (pset! (-> @*player* :body :velocity) :x 0)
+  (cond
+    (-> @*cursors* :left :is-down) (do (pset! (-> @*player* :body :velocity) :x -150)
+                                       (pam/play (-> @*player* :animations) "left"))
+    (-> @*cursors* :right :is-down) (do (pset! (-> @*player* :body :velocity) :x 150)
+                                        (pam/play (-> @*player* :animations) "right"))
+    :else (do (pam/stop (-> @*player* :animations))
+              (pset! @*player* :frame 4)))
+  (when (and (-> @*cursors* :up :is-down)
+             (aget (-> @*player* :body :touching) "down"))
+    (pset! (-> @*player* :body :velocity) :y -350)))
 
 
 (defn start []
-  (pg/->Game 800 600 (p/phaser-constants :auto) "game"
-             {"preload" p-preload
-              "create" p-create
-              "update" p-update}))
+  (reset! *game* (pg/->Game 800 600 (p/phaser-constants :auto) "game"
+                            {"preload" preload-game
+                             "create" create-game
+                             "update" (fn [game] (update-game game))})))
 
 (set! (.-onload js/window) start)
